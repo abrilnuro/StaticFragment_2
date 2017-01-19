@@ -1,5 +1,6 @@
 package com.example.aimew.staticfragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,6 +27,27 @@ public class MovieListFragment extends android.app.Fragment implements AdapterVi
     private ListView listViewMovie;
     private List<String> movieList;
     private ArrayAdapter<String> movieAdapter;
+
+    //interfaz
+    OnHeadlineSelectedListener mCallback;
+
+    public interface OnHeadlineSelectedListener {
+        public void onArticleSelected(String movie);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (OnHeadlineSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
+    }
+
 
     @Nullable
     @Override
@@ -57,14 +79,10 @@ public class MovieListFragment extends android.app.Fragment implements AdapterVi
         String movieName = movieList.get(i).toString();
 
         //mandar el nombre de la pelicula a la clase
-        Intent intent = new Intent(getActivity().getBaseContext(),
+        mCallback.onArticleSelected(movieName);
+        /*Intent intent = new Intent(getActivity().getBaseContext(),
                 MainActivity.class);
         intent.putExtra("movie", movieName);
-        getActivity().startActivity(intent);
-
-        DetailsFragment fragment = new DetailsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("movieName", movieName);
-        fragment.setArguments(bundle);
+        getActivity().startActivity(intent);*/
     }
 }
